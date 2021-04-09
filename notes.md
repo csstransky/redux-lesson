@@ -1,3 +1,4 @@
+# What Is Redux?
 + Redux based on Flux, a design pattern alternative to MVC
 + Developed in 2015 by Dan Abramov & Andrew Clark
 + Flux designed by Facebook, a variation to MVC
@@ -105,7 +106,7 @@ $ npm install babel-preset-stage-0 --save-dev
 	...
 }
 ```
-# Reducers
+# Understanding Reducers
 + When creating a reducer, make sure to use ES6 syntax of arrow functions
 ```
 // store/reducers.js
@@ -148,3 +149,30 @@ console.log(`
     action: {"type":"ADD_DAY","payload":{"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}}
     new state: {"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}
 ```
++ Don't forget the use of ternary operators
+```
+// reducers.js
+export const goal = (state=10, action) => 
+    (action.type === C.SET_GOAL) ?
+   	    parseInt(action.payload) :
+        state
+```
++ Always make sure to return a new state, instead of mutating the old one
+```
+export const errors = (state=[], action) => {
+	switch(action.type) {
+		case C.ADD_ERROR:
+			// DANGER: Don't do this as you're mutating the original state
+			// state.push(action.payload)
+			return [
+				...state,
+				action.payload
+			]
+		case C.CLEAR_ERROR:
+			return state.filter((message, index) => index !== action.payload)
+		default:
+			return state
+	}
+}
+```
++ An intereting thing to note is that Babel will not like `state.filter(...)` if the initial argument is not given a default value of an Array of some kind

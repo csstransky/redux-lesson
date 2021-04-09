@@ -175,4 +175,18 @@ export const errors = (state=[], action) => {
 	}
 }
 ```
-+ An intereting thing to note is that Babel will not like `state.filter(...)` if the initial argument is not given a default value of an Array of some kind
++ An intereting thing to note is that Babel will not like `state.filter(...)` if the initial argument is not given a default value of an Array of some kind, because it won't know that it's an Array and can use an Array function otherwise
++ Don't forget to try and coalesce Reducers together whenever possible:
+```
+export const allSkiDays = (state=[], action) => {
+	switch(action.type) {
+		case C.ADD_DAY:
+			return [
+				...state,
+				skiDay(null, action)
+			]
+		default:
+			state
+	}
+}
+```

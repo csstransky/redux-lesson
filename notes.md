@@ -106,6 +106,10 @@ $ npm install babel-preset-stage-0 --save-dev
 	...
 }
 ```
++ install Redux with the following:
+```
+$ npm install redux --save-dev
+```
 # Understanding Reducers
 + When creating a reducer, make sure to use ES6 syntax of arrow functions
 ```
@@ -136,8 +140,9 @@ console.log(`
    action: ${JSON.stringify(action)}
    new goal: ${nextState}
 `)
-
-// Console output
+```
+Console output
+```
    intial goal: 10
    action: {"type":"SET_GOAL","payload":15}
    new goal: 15
@@ -229,10 +234,68 @@ const actualState = {
 
 expect(actualState.suggestions).toEqual(expectedState.suggestions)
 expect(actualState.fetching).toEqual(expectedState.fetching)
-
-// Console output:
+```
+Console output
+```
 const expectedState = {
 	fetching: false,
 	suggestions: ['Heavenly Ski Resort', 'Heavens Sonohara']
 }
+```
++ All of our Reducers so far take in multiple kinds of arguments, Redux allows you to combine them to deal with the entire State object with `combineReducers(...)`
+```
+// reducers.js
+export default combineReducers({
+  allSkiDays,
+  goal,
+  errors,
+  resortNames: combineReducers({
+    fetching,
+    suggestions
+  })
+});
+
+// index.js
+import C from './constants'
+import appReducer from './store/reducers'
+import initialState from './initialState.json'
+
+let state = initialState;
+
+state = appReducer(state, {
+    type: C.SET_GOAL,
+    payload: 2
+});
+
+state = appReducer(state, {
+    type: C.ADD_DAY,
+    payload: {
+        "resort": "Mt Shasta",
+        "date": "2021-10-2",
+        "powder": true,
+        "backcountry": true
+    }
+})
+
+state = appReducer(state, {
+    type: C.CHANGE_SUGGESTIONS,
+    payload: ["Mt Tallac", "Mt Hood", "Gunstock"]
+})
+```
+Console output
+```
+    Initital State
+    ====================
+    goal: 10
+    resorts: [{"resort":"Kirkwood","date":"2016-12-7","powder":true,"backcountry":false},{"resort":"Squaw Valley","date":"2016-12-8","powder":false,"backcountry":false},{"resort":"Mt Tallac","date":"2016-12-9","powder":false,"backcountry":true}]
+    fetching: false
+    suggestions: Squaw Valley,Snowbird,Stowe,Steamboat
+
+
+    Changed State
+    ====================
+    goal: 2
+    resorts: [{"resort":"Mt Shasta","date":"2021-10-2","powder":true,"backcountry":true},{"resort":"Mt Tallac","date":"2016-12-9","powder":false,"backcountry":true},{"resort":"Squaw Valley","date":"2016-12-8","powder":false,"backcountry":false},{"resort":"Kirkwood","date":"2016-12-7","powder":true,"backcountry":false}]
+    fetching: false
+    suggestions: Mt Tallac,Mt Hood,Gunstock
 ```

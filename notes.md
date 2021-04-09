@@ -73,3 +73,48 @@ export default constants
 	}
 }
 ```
++ This lesson uses NodeJS and Babel 
+	- NodeJS is mainly used to run code and handle packages
+	- Babel is used to make all our code ES5 backwards-compatible
+```
+$ npm init
+// Just put in "ski-day-counter" for package name, default for the rest
+$ npm install babel-cli --save-dev
+// "--save-dev" makes sure to add dependencies to package.json
+$ npm install babel-preset-latest --save-dev
+// This will install all of the latest ES6 features
+$ npm install babel-preset-stage-0 --save-dev
+// Adds all experimental features
+```
++ We need to tell Babel which presets to use when transpiling our code:
+```
+// .babelrc
+{
+	"presets": ["latest", "stage-0"]
+}
+```
++ npm will need a start script, so make sure to include that:
+```
+// package.json
+{
+	...
+	"scripts": {
+		"start": "./node_modules/.bin/babel-node ./src/"
+		// Babel will automatically choose the index.js file in the src folder
+	}
+	...
+}
+```
+# Reducers
++ When creating a reducer, make sure to use ES6 syntax of arrow functions
+```
+// store/reducers.js
+export const goal = (state, action) => {
+    if (action.type === C.SET_GOAL) {
+        return parseInt(action.payload);
+    } else {
+        return state;
+    }
+}
+```
++ Setting a reducer as `const` allows the reducer to be unchangable, which is what we want

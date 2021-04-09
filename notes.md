@@ -6,8 +6,8 @@ interact with one another and cause unintended consequences because a model
 change could mess with the model for another view
 + Flux: Action -> Dispatcher -> Store -> View -> Action -> etc...
 + DATA FLOWS IN ONE DIRECTION
-+ All changes will begin with an Action, and end on the View 
-
++ All changes will begin with an Action, and end on the View  
+  
 + Redux isn't exactly Flux, it's Flux-lite
 + Redux combines the Dispatcher and Store into simply a Store, this means that
 you can only do Actions on 1 Store (instead of a Dispatcher being able to 
@@ -42,3 +42,34 @@ getPercent(1, 4); // Output is '25%'
 	- CLEAR_ERROR
 	- FETCH_RESORT_NAMES
 	- CANCEL_FETCHING
+
++ Redux Actions are really Strings, but it's good practice to use an Object with String values instead to allow less errors and better development:
+```
+//constants.js
+const constants = {
+	ADD_DAY: "ADD_DAY",
+	REMOVE_DAY: "REMOVE_DAY",
+	SET_GOAL: "SET_GOAL",
+	ADD_ERROR: "ADD_ERROR",
+	CLEAR_ERROR: "CLEAR_ERROR",
+	FETCH_RESORT_NAMES: "FETCH_RESORT_NAMES",
+	CANCEL_FETCHING: "CANCEL_FETCHING",
+	CHANGE_SUGGESTIONS: "CHANGE_SUGGESTIONS",
+	CLEAR_SUGGESTIONS: "CLEAR_SUGGESTIONS"
+}
+
+export default constants
+```
++ Redux works directly with React, so make sure to use States, and always make sure to have an initialState of some kind:
+```
+// initialState.json
+{
+	"allSkiDays": [...],
+	"goal": 10,
+	"errors": [],
+	"resortNames": {
+		"fetching": false,
+		"suggestions": ["Squaw Valley", "Snowbird", "Stowe", "Steamboat"]
+	}
+}
+```

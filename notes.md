@@ -190,3 +190,49 @@ export const allSkiDays = (state=[], action) => {
 	}
 }
 ```
++ The same actions can be used on different reducers that aren't related, so make sure to have cases for them:
+```
+// reducers.js
+export const fetching = (state=false, action) => {
+  switch(action.type) {
+    case C.FETCH_RESORT_NAMES:
+      return true;
+
+    case C.CANCEL_FETCHING:
+      return false;
+
+	// Even though this isn't directly related to fetching, we still want our
+	// fetching to be false whenever it's time to make changes
+    case C.CHANGE_SUGGESTIONS:
+      return false;
+
+    default:
+      return state;
+  }
+}
+
+// index.js
+const action = {
+    type: C.CHANGE_SUGGESTIONS,
+    payload: ['Heavenly Ski Resort', 'Heavens Sonohara']
+}
+
+const state = {
+	fetching: true,
+	suggestions: []
+}
+
+const actualState = {
+	fetching: fetching(state.fetching, action),
+	suggestions: suggestions(state.suggestions, action)
+}
+
+expect(actualState.suggestions).toEqual(expectedState.suggestions)
+expect(actualState.fetching).toEqual(expectedState.fetching)
+
+// Console output:
+const expectedState = {
+	fetching: false,
+	suggestions: ['Heavenly Ski Resort', 'Heavens Sonohara']
+}
+```

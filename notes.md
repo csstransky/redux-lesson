@@ -45,8 +45,9 @@ getPercent(1, 4); // Output is '25%'
 	- CANCEL_FETCHING
 
 + Redux Actions are really Strings, but it's good practice to use an Object with String values instead to allow less errors and better development:
+
+constants.js
 ```
-//constants.js
 const constants = {
 	ADD_DAY: "ADD_DAY",
 	REMOVE_DAY: "REMOVE_DAY",
@@ -62,8 +63,9 @@ const constants = {
 export default constants
 ```
 + Redux works directly with React, so make sure to use States, and always make sure to have an initialState of some kind:
+
+initialState.json
 ```
-// initialState.json
 {
 	"allSkiDays": [...],
 	"goal": 10,
@@ -77,6 +79,8 @@ export default constants
 + This lesson uses NodeJS and Babel 
 	- NodeJS is mainly used to run code and handle packages
 	- Babel is used to make all our code ES5 backwards-compatible
+
+Console
 ```
 $ npm init
 // Just put in "ski-day-counter" for package name, default for the rest
@@ -88,15 +92,17 @@ $ npm install babel-preset-stage-0 --save-dev
 // Adds all experimental features
 ```
 + We need to tell Babel which presets to use when transpiling our code:
+
+.babelrc
 ```
-// .babelrc
 {
 	"presets": ["latest", "stage-0"]
 }
 ```
 + npm will need a start script, so make sure to include that:
+
+package.json
 ```
-// package.json
 {
 	...
 	"scripts": {
@@ -112,8 +118,9 @@ $ npm install redux --save-dev
 ```
 # Understanding Reducers
 + When creating a reducer, make sure to use ES6 syntax of arrow functions
+
+store/reducers.js
 ```
-// store/reducers.js
 export const goal = (state, action) => {
     if (action.type === C.SET_GOAL) {
         return parseInt(action.payload);
@@ -124,8 +131,9 @@ export const goal = (state, action) => {
 ```
 + Setting a reducer as `const` allows the reducer to be unchangable, which is what we want
 + A reducer mainly works by getting a State and Action, and acting upon it
+
+index.js
 ```
-// index.js
 const state = 10;
 
 const action = {
@@ -148,21 +156,25 @@ Console output
    new goal: 15
 ```
 + This of course is most opitimal for Objects being used as States:
+
+Console output
 ```
-// Console output
     initial state: null
     action: {"type":"ADD_DAY","payload":{"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}}
     new state: {"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}
 ```
 + Don't forget the use of ternary operators
+
+reducers.js
 ```
-// reducers.js
 export const goal = (state=10, action) => 
     (action.type === C.SET_GOAL) ?
    	    parseInt(action.payload) :
         state
 ```
 + Always make sure to return a new state, instead of mutating the old one
+
+reducers.js
 ```
 export const errors = (state=[], action) => {
 	switch(action.type) {
@@ -182,6 +194,8 @@ export const errors = (state=[], action) => {
 ```
 + An intereting thing to note is that Babel will not like `state.filter(...)` if the initial argument is not given a default value of an Array of some kind, because it won't know that it's an Array and can use an Array function otherwise
 + Don't forget to try and coalesce Reducers together whenever possible:
+
+reducers.js
 ```
 export const allSkiDays = (state=[], action) => {
 	switch(action.type) {
@@ -196,8 +210,9 @@ export const allSkiDays = (state=[], action) => {
 }
 ```
 + The same actions can be used on different reducers that aren't related, so make sure to have cases for them:
+
+reducers.js
 ```
-// reducers.js
 export const fetching = (state=false, action) => {
   switch(action.type) {
     case C.FETCH_RESORT_NAMES:
@@ -215,8 +230,9 @@ export const fetching = (state=false, action) => {
       return state;
   }
 }
-
-// index.js
+```
+index.js
+```
 const action = {
     type: C.CHANGE_SUGGESTIONS,
     payload: ['Heavenly Ski Resort', 'Heavens Sonohara']
@@ -243,8 +259,9 @@ const expectedState = {
 }
 ```
 + All of our Reducers so far take in multiple kinds of arguments, Redux allows you to combine them to deal with the entire State object with `combineReducers(...)`
+
+reducers.js
 ```
-// reducers.js
 export default combineReducers({
   allSkiDays,
   goal,
@@ -254,8 +271,9 @@ export default combineReducers({
     suggestions
   })
 });
-
-// index.js
+```
+index.js
+```
 import C from './constants'
 import appReducer from './store/reducers'
 import initialState from './initialState.json'
@@ -299,3 +317,15 @@ Console output
     fetching: false
     suggestions: Mt Tallac,Mt Hood,Gunstock
 ```
+# The Store
++ NodeJs has been used to run code in console, but we should focus on running it in the browser
++ Webpack and Babel will bundle all the code into one JavaScript file that can be run by the browser
++ Webpack can be installed as follows:
+
+Console
+```
+$ npm install
+// installs everything inside our package.json file, which includes Babel and presets
+$ npm install webpack --save-dev
+```
++ Webpack dev server will actually be used to listen to changes in the webcode, and will update accordingly

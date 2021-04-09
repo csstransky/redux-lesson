@@ -12,6 +12,6 @@ const nextState = goal(state, action)
 
 console.log(`
    intial goal: ${state}
-   actionL ${JSON.stringify(action)}
+   action: ${JSON.stringify(action)}
    new goal: ${nextState}
 `)

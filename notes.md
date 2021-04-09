@@ -118,3 +118,33 @@ export const goal = (state, action) => {
 }
 ```
 + Setting a reducer as `const` allows the reducer to be unchangable, which is what we want
++ A reducer mainly works by getting a State and Action, and acting upon it
+```
+// index.js
+const state = 10;
+
+const action = {
+   type: C.SET_GOAL,
+   payload: 15
+}
+
+const nextState = goal(state, action)
+
+console.log(`
+   intial goal: ${state}
+   action: ${JSON.stringify(action)}
+   new goal: ${nextState}
+`)
+
+// Console output
+   intial goal: 10
+   action: {"type":"SET_GOAL","payload":15}
+   new goal: 15
+```
++ This of course is most opitimal for Objects being used as States:
+```
+// Console output
+    initial state: null
+    action: {"type":"ADD_DAY","payload":{"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}}
+    new state: {"resort":"Heavenly","data":"2021-10","powder":true,"backcountry":false}
+```

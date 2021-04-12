@@ -530,3 +530,58 @@ Goal: 64
 Goal: 52
 Goal: 10
 ```
++ Middleware gives us the ability to add functionality to the pipeline of how Actions are dispatched, 
+  with the Redux function `applyMiddleware`
++ Middleware functions needs to be a higher order function that takes 3 functions in order
+  `const function = store => next => action => {...}`:
+
+store/index.js
+```
+import { createStore, applyMiddleware } from 'redux';
+
+const consoleMessages = store => next => action => {
+    let result;
+    console.groupCollapsed(`dispatching action => ${action.type}`);
+    console.log('ski days', store.getState().allSkiDays.length);
+    result = next(action);
+
+    let { allSkiDays, goal, errors, resortNames } = store.getState();
+
+    console.log(`
+        ski days: ${allSkiDays.length}
+        goal: ${goal}
+        fetching: ${resortNames.fetching}
+        suggestions: ${resortNames.suggestions}
+        errors: ${errors.length}
+    `)
+    return result;
+}
+
+export default (initialState={}) => {
+    return applyMiddleware(consoleMessages)(createStore)(appReducer, initialState);
+}
+```
++  `console.groupCollapsed(...)` and `console.groupEnd()` are used to make
+   automatically collapsed console messages
++ Because we exported the default function above, we can create a Store and apply Middleware at the same time:
+
+src/index.js
+```
+import storeFactory from './store'
+
+const initialState = (localStorage['redux-store']) ?
+	JSON.parse(localStorage['redux-store']) :
+	{}
+
+const store = storeFactory(initialState);
+
+store.dispatch({
+	type: C.ADD_DAY,
+	payload: {
+		"resort": "Mt Shasta",
+		"date": "2020-2-2",
+		"powder": true,
+		"backcountry": false
+	}
+})
+```

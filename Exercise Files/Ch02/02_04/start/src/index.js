@@ -1,24 +1,29 @@
 import C from './constants'
-import { skiDay } from './store/reducers'
+import { errors } from './store/reducers'
 
-const state = null
+const state = [
+	"user not aurthorized",
+	"server not happy"
+]
 
 const action = {
-	type: C.ADD_DAY,
-	payload: {
-		"resort": "Heavenly",
-		"date": "2016-12-16",
-		"powder": true,
-		"backcountry": false
-	}
+	type: C.ADD_ERROR,
+	payload: "cannot connect to server"
 }
 
-const nextState = skiDay(state, action)
+const nextState = errors(state, action);
+
+const action2 = {
+	type: C.CLEAR_ERROR,
+	payload: 1
+}
+
+const nextState2 = errors(nextState2, action2);
 
 console.log(`
 
     initial state: ${state}
-    action: ${JSON.stringify(action)}
-    new state: ${JSON.stringify(nextState)}
+    action: ${JSON.stringify(action2)}
+    new state: ${JSON.stringify(nextState2)}
 
 `)

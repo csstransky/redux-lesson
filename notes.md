@@ -317,7 +317,7 @@ Console output
     fetching: false
     suggestions: Mt Tallac,Mt Hood,Gunstock
 ```
-# The Store
+# Webpack & In-Browser Code Execution
 + NodeJs has been used to run code in console, but we should focus on running it in the browser
 + Webpack and Babel will bundle all the code into one JavaScript file that can be run by the browser
 + Webpack can be installed as follows:
@@ -390,3 +390,30 @@ package.json
 ```
 + NOTE: Things didn't really turn out well for me because of the different versions of packages,
 so that's a thing to keep in mind when using `webpack-dev-server` in the future. Configs are always picky
+
+# The Store
++ We used to have a single State that we'd use Reducers on, but instead we'll have a Store that handles the State and 
+simply call Actions on that State
++ Creating a store is done with a simple `createStore(...)` function, and getting the State with `getState()`:
+
+index.js
+```
+const store = createStore(appReducer, initialState);
+console.log('initial state', store.getState());
+```
++ Actions can now be used on the State with `dispatch(...)` function:
+
+index.js
+```
+store.dispatch({
+    type: C.ADD_DAY,
+    payload: {
+        "resort": "Mt Shasta",
+        "date": "2020-2-2",
+        "powder": true,
+        "backcountry": false
+    }
+})
+console.log('next state', store.getState()); // Shows the day getting added
+```
+  

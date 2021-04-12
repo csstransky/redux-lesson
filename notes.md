@@ -553,7 +553,9 @@ const consoleMessages = store => next => action => {
         fetching: ${resortNames.fetching}
         suggestions: ${resortNames.suggestions}
         errors: ${errors.length}
-    `)
+    `);
+    console.groupEnd();
+    
     return result;
 }
 
@@ -584,4 +586,35 @@ store.dispatch({
 		"backcountry": false
 	}
 })
+```
+# Action Creators
+
++ It's important to note that the Application should not BE the Store, it should simply use the Store
+	- Examples of what the Store SHOULDN'T do are reading and writing file data, fetching data from an API, etc.
+	
++ Action Creators are functions that encapsulate the logic of Store Actions:
+
+actions.js
+```
+export const addDay = (resort, date, powder=false, backcountry=false) => {
+
+    // Add additional App logic here...
+
+    return {
+        type: C.ADD_DAY,
+        payload: { resort, date, powder, backcountry }
+    }
+}
+```
+
+index.js
+```
+import storeFactory from './store'
+import { addDay } from "./actions";
+
+const store = storeFactory();
+
+store.dispatch(
+	addDay("Heavenly", "2020-2-2")
+)
 ```

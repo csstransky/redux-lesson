@@ -416,4 +416,80 @@ store.dispatch({
 })
 console.log('next state', store.getState()); // Shows the day getting added
 ```
++ The `subscribe(...)` function can be used on the Store to use a specified Callback every time an Action is dispatched
+on the Store
   
+index.js
+```
+const store = createStore(appReducer);
+
+store.subscribe(() => console.log(store.getState()));
+
+store.dispatch({
+	type: C.ADD_DAY,
+	payload: {
+		"resort": "Mt Shasta",
+		"date": "2020-2-2",
+		"powder": true,
+		"backcountry": false
+	}
+})
+
+store.dispatch({
+	type: C.SET_GOAL,
+	payload: 13
+})
+
+// The console will automatically print the State twice, right after both Dispatches respectively 
+```
++ `localStorage` is native within ES6 that allows you to store (as a Map) objects inside of it,
+and use freely within the console
++ `window.*` can be used to globally assign variables that can be called in the console:
+
+index.js
+```
+const store = createStore(appReducer, initialState);
+const dude = "dude";
+window.store = store;
+window.dude = dude;
+```
++ Using both of those previous points, we can log the current State after each Action as follows:
+
+index.js
+```
+const initialState = localStorage['redux-store'] ?
+	JSON.parse(localStorage['redux-store']) :
+	{};
+
+const store = createStore(appReducer, initialState);
+
+window.store = store;
+
+store.subscribe(() => {
+	const state = JSON.stringify(store.getState());
+	localStorage['redux-store'] = state;
+});
+
+store.dispatch({
+	type: C.ADD_DAY,
+	payload: {
+		"resort": "Mt Shasta",
+		"date": "2020-2-2",
+		"powder": true,
+		"backcountry": false
+	}
+})
+
+store.dispatch({
+	type: C.SET_GOAL,
+	payload: 13
+})
+```
+
+Console output
+```
+localStorage
+Storage {redux-store: "{"allSkiDays":[{"resort":"Mt Shasta","date":"2020-…resortNames":{"fetching":false,"suggestions":[]}}", length: 1}
+store.getState()
+{allSkiDays: Array(1), goal: 13, errors: Array(0), resortNames: {…}}
+```

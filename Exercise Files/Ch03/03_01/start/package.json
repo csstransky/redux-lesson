@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node ./src"
+    "start": "./node_modules/.bin/webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
@@ -12,8 +12,13 @@
     "redux": "^3.6.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.2.2",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "webpack": "^5.31.2"
+    "json-loader": "^0.5.7",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }

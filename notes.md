@@ -328,4 +328,65 @@ $ npm install
 // installs everything inside our package.json file, which includes Babel and presets
 $ npm install webpack --save-dev
 ```
-+ Webpack dev server will actually be used to listen to changes in the webcode, and will update accordingly
++ Webpack dev server will actually be used to listen to changes in the webcode, and will update accordingly  
+  ```
+  $  npm install webpack-dev-server --save-dev
+  ```
+
+	- Loaders are instructions that Webpacks follows while transpiling code
+	```
+  $ npm install babel-loader --save-dev
+  $ npm install json-loader --save-dev
+  // Just making sure that Babel core is installed
+  $ npm install babel-core --save-dev
+	```
++ A special webpack config file will need to be made:
+
+webpack.config.js
+```
+module.exports = {
+    entry: "./src/index.js", // where all the JS code will bundle into a single file
+    output: {
+        path: "dist/assets", // where the one JS file will be placed
+        filename: "bundle.js", // name of the file
+        publicPath: "assets" // where it's actually placed
+    },
+    devServer: {
+        inline: true, // tells webpack to use a client entry point so we can use port 3000
+        contentBase: "./dist", // says where our files will be found
+        port: 3000 // port used to show things in-browser
+    },
+    module: {
+        loaders: [ // any modules that have ES6 will be transpiled as ES5 with these
+            {
+                test: /\.js$/, // any file with a .js is included
+                exclude: /(node_modules)/, // ignore our npm stuff of course
+                loader: ['babel'], // we want to use the Babel loader 
+                query: { 
+                    presets: ['latest', 'stage-0'] // presets need to be stated here too 
+                }
+            },
+            { // NodeJS automatically loads in JSON, but the browser and client do not
+                test: /\.json$/, // any file with a .json file
+                exclude: /(node_modules)/, // ignore our npm stuff of course
+                loader: 'json-loader' // we want to use the Json loader
+            }
+        ]
+    }
+}
+```
++ Now we'll use the `webpack-dev-server` to run our code in the client, but first the `package.json` file needs to 
+  edit the start command
+  
+package.json
+```
+{
+  ...
+  "scripts": {
+	"start": "./node_modules/.bin/webpack-dev-server"
+  },
+  ...
+}
+```
++ NOTE: Things didn't really turn out well for me because of the different versions of packages,
+so that's a thing to keep in mind when using `webpack-dev-server` in the future. Configs are always picky

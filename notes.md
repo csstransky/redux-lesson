@@ -686,3 +686,21 @@ const store = storeFactory();
 store.dispatch(randomGoals());
 store.dispatch(randomGoals()); // because of our If statement, this only happens once
 ```
+
++ An Express Server is added in the files that can be used like this:
+
+Console output
+```
+$ npm install
+$ npm run suggestions
+```
+
+URL Bar
+```
+localhost:3333/resorts
+// shows all ski resort names
+localhost:3333/resorts/h
+// shows all the ski resort names that start with "h"
+```
+
+

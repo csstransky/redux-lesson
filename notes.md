@@ -846,7 +846,7 @@ render(
     document.getElementById('react-container')
 )
 ```
-+ 'connect' is a react-redux function that will create a component that will grab the Store out of state and 
++ `connect` is a react-redux function that will create a component that will grab the Store out of state and 
 map the State onto the component from the Store
 
 components/containers/SkiDayCount.js
@@ -871,4 +871,47 @@ export default Container
 
 // This is the old way of doing it and what we're replacing
 // export default () =>	<SkiDayCount total={100} powder={25} backcountry={10} />
+```
++ `connect` can also take dispatch Action functions from the Store and attach them to React components
+
+components/containers/ShowErrors.js
+```
+import ShowErrors from '../ui/ShowErrors'
+import { clearError } from './actions'
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => {
+	return {
+		errors: state.errors
+	}
+}
+
+const mapDispatchToProps = dispatch => {
+	return {
+		onClearError(index) {
+			dispatch(clearError(index));
+		}
+	}
+}
+
+// The first arg expects State first, then the dispatch Callbacks, order matters
+export default connect(mapStateToProps, mapDispatchToProps)(ShowErrors)
+
+/* This is the React component we're replacing
+export default () =>
+  <ShowErrors errors={['sample error']}
+    onClearError={index => console.log('todo: clear error at', index)} />
+*/
+```
++ In this case we'll want the App to always listen for Errors so that they can be displayed whenever they occur
+
+index.js
+```
+import { addError } from "./actions";
+
+const handleError = error => {
+	store.dispatch(addError(error));
+}
+
+window.addEventListener("error", handleError);
 ```

@@ -915,3 +915,33 @@ const handleError = error => {
 
 window.addEventListener("error", handleError);
 ```
++ `connect`'s `mapStateToProps` function can actually take in both the State **AND** 
+  the Component's props and use them accordingly
+  
+components/containers/SkiDayList.js
+```
+import SkiDayList from '../ui/SkiDayList'
+import { connect } from 'react-redux'
+import { removeDay } from "../../actions";
+
+// notice the two input args state AND props being used
+const mapStateToProps = (state, props) => ({
+    days: state.allSkiDays,
+    filter: props.params.filter
+})
+
+const mapDispatchToProps = dispatch => ({
+    onRemoveDay(date) {
+        dispatch(removeDay(date))
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SkiDayList);
+
+/* What we're replacing, we can even use props as well
+export default (props) =>
+    <SkiDayList days={sample}
+                filter={props.params.filter}
+                onRemoveDay={date => console.log('remove day on', date)} />
+*/
+```

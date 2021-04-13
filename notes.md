@@ -945,3 +945,54 @@ export default (props) =>
                 onRemoveDay={date => console.log('remove day on', date)} />
 */
 ```
++ React can handle forms with a `withRouter` function that's a Container that will wrap the Component with a Router 
+that navigates the user back to the page after submitting the form
+  
++ Even with this wrapped Container, you can still use the Container from `connect` to be wrapped by `withRouter`,
+meaning we still can use the Redux Store
+
+components/containers/AddDayForm.js
+```
+import AddDayForm from '../ui/AddDayForm'
+import { withRouter } from 'react-router'
+import { connect } from 'react-redux'
+import { addDay, suggestResortNames, clearSuggestions } from "../../actions";
+
+const mapStateToProps = (state, props) => ({
+    suggestions: state.resortNames.suggestions,
+    fetching: state.resortNames.fetching,
+    router: props.router
+})
+
+const mapDispatchToProps = dispatch => ({
+    onNewDay({ resort, date, powder, backcountry }) {
+        dispatch(addDay(resort, date, powder, backcountry))
+    },
+    onChange(value) {
+        if (value) {
+            dispatch(suggestResortNames(value))
+        } else {
+            dispatch(clearSuggestions())
+        }
+    },
+    onClear() {
+        dispatch(clearSuggestions())
+    }
+})
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(AddDayForm)
+
+export default withRouter(Container)
+
+/* What we're replacing, BUT we still keep and use the withRouter(...) Container
+export default withRouter(
+    (props) => 
+        <AddDayForm suggestions={[]} 
+                fetching={false} 
+                router={props.router} 
+                onNewDay={day => console.log('todo: add day', day)}
+                onChange={value => console.log('todo: suggest', value)}
+                onClear={() => console.log('todo: clear suggestions')} />
+)
+ */
+```

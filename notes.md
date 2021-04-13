@@ -692,6 +692,12 @@ store.dispatch(randomGoals()); // because of our If statement, this only happens
 Console output
 ```
 $ npm install
+
+// I personally ran into some trouble here because of new updates and had to run
+// these 2 following commands:
+$ npm uninstall babel
+$ npm install --save-dev babel-cli
+
 $ npm run suggestions
 ```
 
@@ -703,4 +709,82 @@ localhost:3333/resorts/h
 // shows all the ski resort names that start with "h"
 ```
 
++ `isomorphic-fetch` is used to make fetch requests by the URL
 
+Console output
+```
+$ npm install isomorphic-fetch --save
+```
+
++ We will match an async fetch call Action that will grab resort names and save them in the Store
+
+actions.js
+```
+import fetch from 'isomorphic-fetch'
+
+export const suggestResortNames = value => dispatch => {
+	dispatch({
+		type: C.FETCH_RESORT_NAMES
+	})
+
+	fetch('http://localhost:3333/resorts/' + value)
+		.then(response => response.json())
+		.then(suggestions => dispatch(changeSuggestions(suggestions)))
+		.catch(error => {
+			dispatch(addError(error.message))
+			dispatch({
+				type: C.CANCEL_FETCHING
+			})
+		})
+}
+```
+
+index.js
+```
+import storeFactory from './store'
+import { suggestResortNames } from "./actions";
+
+const store = storeFactory();
+
+store.dispatch(suggestResortNames("hea"));
+```
+
+Console output (suggestions server running)
+```
+dispatching action => FETCH_RESORT_NAMES
+
+		ski days: 0
+		goal: 10
+		fetching: true
+		suggestions: 
+		errors: 0
+
+dispatching action => CHANGE_SUGGESTIONS
+
+		ski days: 0
+		goal: 10
+		fetching: false
+		suggestions: Heavenly Ski Resort,Heavens Sonohara
+		errors: 0
+```
+
+Console output (suggestions server **NOT running**)
+```
+dispatching action => FETCH_RESORT_NAMES
+GET http://localhost:3333/resorts/hea net::ERR_CONNECTION_REFUSED
+dispatching action => ADD_ERROR
+
+		ski days: 0
+		goal: 10
+		fetching: true
+		suggestions: 
+		errors: 1
+
+dispatching action => CANCEL_FETCHING
+
+		ski days: 0
+		goal: 10
+		fetching: false
+		suggestions: 
+		errors: 1
+```

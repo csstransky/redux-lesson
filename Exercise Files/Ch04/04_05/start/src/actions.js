@@ -1,4 +1,21 @@
-import C from './constants'
+import C, { SERVER_URL } from './constants'
+import fetch from 'isomorphic-fetch'
+
+export const suggestResortNames = value => dispatch => {
+	dispatch({
+		type: C.FETCH_RESORT_NAMES
+	})
+
+	fetch(SERVER_URL + value)
+		.then(response => response.json())
+		.then(suggestions => dispatch(changeSuggestions(suggestions)))
+		.catch(error => {
+			dispatch(addError(error.message))
+			dispatch({
+				type: C.CANCEL_FETCHING
+			})
+		})
+}
 
 export function addDay(resort, date, powder=false, backcountry=false) {
 

@@ -1,3 +1,5 @@
+export const SERVER_URL = 'http://localhost:3333/resorts/';
+
 const constants = {
 	ADD_DAY: "ADD_DAY",
 	REMOVE_DAY: "REMOVE_DAY",

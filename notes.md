@@ -846,3 +846,29 @@ render(
     document.getElementById('react-container')
 )
 ```
++ 'connect' is a react-redux function that will create a component that will grab the Store out of state and 
+map the State onto the component from the Store
+
+components/containers/SkiDayCount.js
+```
+import SkiDayCount from '../ui/SkiDayCount'
+import { connect } from 'react-redux'
+
+// This object is used to map the Store onto the React component below
+const mapStateToProps = (state) => {
+	return {
+		total: state.allSkiDays.length,
+		powder: state.allSkiDays.filter(day => day.powder).length,
+		backcountry: state.allSkiDays.filter(day => day.backcountry).length
+	}
+}
+
+// higher order function that first needs the map State to put into the UI component,
+// and then the second arg is the actual UI component itself
+const Container = connect(mapStateToProps)(SkiDayCount)
+
+export default Container
+
+// This is the old way of doing it and what we're replacing
+// export default () =>	<SkiDayCount total={100} powder={25} backcountry={10} />
+```

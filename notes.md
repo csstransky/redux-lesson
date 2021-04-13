@@ -636,3 +636,53 @@ export const setGoal = (goal) => ({
     payload: goal
 })
 ```
++ Thunks are higher order functions (Action Creators in our case) that let us choose when to dispatch Actions 
++ `redux-thunk` is a Middleware that will be used by us as our Thunks
+
+Console output
+```
+$ npm install redux-thunk --save
+```
++ If we apply `thunk` to our Middleware, we can allow asynchronous calls that gives us the ability to use `dispatch`
+and `getState` freely
+  
+store/index.js
+```
+import thunk from 'redux-thunk'
+
+...
+
+export default (initialState={}) => {
+	return applyMiddleware(thunk, consoleMessages)(createStore)(appReducer, initialState)
+}
+```
+
+actions.js
+```
+// this is really using our Thunk functionality, notice the higher order 
+// function of (dispatch, getState) being added, they act as expected
+export const randomGoals = () => (dispatch, getState) => {
+	if (!getState().resortNames.fetching) {
+		dispatch({
+			type: C.FETCH_RESORT_NAMES
+		})
+
+		setTimeout(() => {
+			dispatch({
+				type: C.CANCEL_FETCHING
+			})
+		}, 1500)
+	}
+}
+```
+
+src/index.js
+```
+import storeFactory from './store'
+import { randomGoals } from "./actions";
+
+const store = storeFactory();
+
+store.dispatch(randomGoals());
+store.dispatch(randomGoals()); // because of our If statement, this only happens once
+```

@@ -788,3 +788,61 @@ dispatching action => CANCEL_FETCHING
 		suggestions: 
 		errors: 1
 ```
+
+# Incorporating React
+
++ 'react-redux' will be a library that integrates the Store with React components
+
+Console output
+```
+$ npm install react-redux --save-dev
+```
+
++ Below is the index file that stores Redux Store state so we can look at it:
+
+index.js
+```
+import React from 'react'
+import { render } from 'react-dom'
+import routes from './routes'
+import sampleData from './initialState'
+import storeFactory from './store'
+import { Provider } from 'react-redux'
+
+// stores the Redux Store inside the JS browser localStorage that can be queried any time
+const initialState = (localStorage["redux-store"]) ?
+    JSON.parse(localStorage["redux-store"]) :
+    sampleData
+
+// puts the state of the Store into localStorage whenever we want
+const saveState = () => 
+    localStorage["redux-store"] = JSON.stringify(store.getState())
+
+// creates a Redux Store with the initialState object
+const store = storeFactory(initialState);
+
+// this will callback the saveState function any time an Action is dispatched
+store.subscribe(saveState);
+
+// Allows both the entire React components and Redux Store to be global,
+// so we can call them in the console
+window.React = React
+window.store = store
+```
+
++ `Provider` passes the Store around the React tree's routes as you're moving through web pages, meaning
+this allows any React child component to interact with the Redux Store if they want to
+  
+index.js
+```
+import { Provider } from 'react-redux'
+
+...
+
+render(
+	<Provider store={store}>
+		{routes}
+	</Provider>,
+    document.getElementById('react-container')
+)
+```

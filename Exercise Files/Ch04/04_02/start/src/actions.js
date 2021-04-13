@@ -24,5 +24,22 @@ export const setGoal = (goal) =>
 		payload: goal
 	})
 
+export const addError = (error) => ({
+	type: C.ADD_ERROR,
+	payload: error
+})
 
+export const clearError = (index) => ({
+	type: C.CLEAR_ERROR,
+	payload: index
+})
+
+export const changeSuggestions = (suggestions) => ({
+	type: C.CHANGE_SUGGESTIONS,
+	payload: suggestions
+})
+
+export const clearSuggestions = () => ({
+	type: C.CLEAR_SUGGESTIONS
+})
 

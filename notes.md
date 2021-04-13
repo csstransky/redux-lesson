@@ -618,3 +618,21 @@ store.dispatch(
 	addDay("Heavenly", "2020-2-2")
 )
 ```
++ For our purposes, if can be neatly wrapped in this syntax:
+
+index.js
+```
+import storeFactory from './store'
+import { setGoal } from "./actions";
+
+const store = storeFactory();
+store.dispatch(setGoal(13));
+```
+
+actions.js
+```
+export const setGoal = (goal) => ({
+    type: C.SET_GOAL,
+    payload: goal
+})
+```
